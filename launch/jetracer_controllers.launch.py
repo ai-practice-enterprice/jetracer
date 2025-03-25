@@ -4,7 +4,7 @@ from launch.actions import RegisterEventHandler
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import PathJoinSubstitution
 from launch_ros.actions import Node
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument , ExecuteProcess
 from launch.substitutions import LaunchConfiguration , PythonExpression
 
 def generate_launch_description():
@@ -37,26 +37,26 @@ def generate_launch_description():
         ],
     )
 
-    ackermann_steering_controller_spawner = Node(
-        package='controller_manager',
-        executable='spawner',
-        namespace=robot_namespace,
-        arguments=['ackermann_steering_controller',
-                   '--param-file',robot_controllers,
-                   '--switch-timeout', '30',
-        ],
-        remappings=[
-            ("/ackermann_steering_controller/tf_odometry","tf")
-        ]
-    )
+    # ackermann_steering_controller_spawner = Node(
+    #     package='controller_manager',
+    #     executable='spawner',
+    #     namespace=robot_namespace,
+    #     arguments=['ackermann_steering_controller',
+    #                '--param-file',robot_controllers,
+    #                '--switch-timeout', '60'
+    #     ],
+    #     remappings=[
+    #         ("/ackermann_steering_controller/tf_odometry","tf")
+    #     ]
+    # )
 
     return LaunchDescription([
         use_sim_time_arg,
         robot_namespace_arg,
         joint_state_broadcaster_spawner,
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=joint_state_broadcaster_spawner,
-                on_exit=[ackermann_steering_controller_spawner]
-            ))        
+        # RegisterEventHandler(
+        #     event_handler=OnProcessExit(
+        #         target_action=joint_state_broadcaster_spawner,
+        #         on_exit=[ackermann_steering_controller_spawner]
+        #     ))        
     ])
